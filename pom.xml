@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!--
+    Copyright 2010 Quick TV
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.flashmonkey</groupId>
+	<artifactId>operations-lib</artifactId>
+	<packaging>swc</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Flashmonkey Operation Framework</name>
+	
+	<properties>
+		<flex.sdk.version>4.0.0.14159</flex.sdk.version>
+		<target.player.version>10.0.0</target.player.version>
+		<config.debug>true</config.debug>
+	</properties>
+
+	<build>
+		<sourceDirectory>src/main/actionscript</sourceDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>3.7.1</version>
+					<extensions>true</extensions>
+					<dependencies>
+						<dependency>
+							<groupId>com.adobe.flex</groupId>
+							<artifactId>compiler</artifactId>
+							<version>${flex.sdk.version}</version>
+							<type>pom</type>
+						</dependency>
+						<dependency>
+							<groupId>com.adobe.flex.compiler</groupId>
+							<artifactId>asdoc</artifactId>
+							<version>${flex.sdk.version}</version>
+							<classifier>template</classifier>
+							<type>zip</type>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<configurationReport>true</configurationReport>
+						<debug>${config.debug}</debug>
+						<targetPlayer>${target.player.version}</targetPlayer>
+						<definesDeclaration>
+						  <property>
+							<name>CONFIG::debug</name>
+							<value>${config.debug}</value>
+						  </property>
+						</definesDeclaration>
+						<locales>
+							<param>en_US</param>
+						</locales>
+						<updateSecuritySandbox>true</updateSecuritySandbox>
+						<includeAsClasses>
+	                        <source>
+	                            <directory>src/main/actionscript</directory>
+	                        </source>
+	                    </includeAsClasses>
+					</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.sdk.version}</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>flexunit</groupId>
+			<artifactId>flexunit</artifactId>
+			<version>0.90</version>
+			<type>swc</type>
+			<scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.as3commons</groupId>
+			<artifactId>as3-commons-lang</artifactId>
+			<version>0.3</version>
+			<type>swc</type>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+	
+	<repositories>
+		<repository>
+			<id>forge</id>
+			<url>http://193.108.87.29:8081/artifactory/repo</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+	</repositories>
+
+</project>
