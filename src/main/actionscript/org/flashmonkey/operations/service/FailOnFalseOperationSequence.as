@@ -7,16 +7,16 @@ package org.flashmonkey.operations.service
 			super();
 		}
 		
-		protected override function operation_completeHandler(event:OperationEvent):void {
+		protected override function operation_completeHandler(o:IOperation):void {
 			
-			if (event.operation.result == false)
+			if (o.result == false)
 			{
-				removeOperationListeners(event.operation);
-				dispatchCompleteEvent(false);
+				removeOperationListeners(o);
+				dispatchComplete(false);
 			}
 			else
 			{
-				super.operation_completeHandler(event);
+				super.operation_completeHandler(o);
 			}
 		}
 	}

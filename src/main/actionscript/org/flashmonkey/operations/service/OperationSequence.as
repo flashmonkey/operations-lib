@@ -20,11 +20,21 @@ package org.flashmonkey.operations.service
 		
         private var operationIndex:uint = 0;
 		
+		public function get index():uint 
+		{
+			return operationIndex;
+		}
+		
 		private var _currentOperation:IOperation;
 		
 		public function get currentOperation():IOperation
 		{
 			return _currentOperation;
+		}
+		
+		public function get operations():IList
+		{
+			return _operations;
 		}
         
 		public function OperationSequence()
@@ -36,7 +46,23 @@ package org.flashmonkey.operations.service
 		{
 			_operations.addItem(operation);
 			
+			updateProgress();
+			
 			return this;
+		}
+		
+		protected function updateProgress():void 
+		{
+			if (operationIndex == 0)
+			{
+				progress = 0;
+			}
+			else
+			{
+				progress = operationIndex / _operations.length;
+			}
+			
+			dispatchProgress();
 		}
 		
 		override public function execute():void
@@ -52,14 +78,15 @@ package org.flashmonkey.operations.service
         {
             if (operationIndex >= _operations.length)
             {
-                dispatchCompleteEvent();
+                dispatchComplete();
                 return;
             }
             
-			dispatchProgressEvent();
+			dispatchProgress();
 
-            _currentOperation = _operations.getItemAt(operationIndex) as IOperation;
+            _currentOperation = _operations.getItemAt(operationIndex++) as IOperation;
             addOperationListeners(_currentOperation);
+			updateProgress();
 			_currentOperation.execute();
         }
 		
@@ -84,13 +111,12 @@ package org.flashmonkey.operations.service
 		 *
 		 * @param event the event of the operation that completed
 		 */
-		protected function operation_completeHandler(event:OperationEvent):void {
-			removeOperationListeners(event.operation);
-			_operations.removeItemAt(_operations.getItemIndex(event.operation));
-			progress++;
+		protected function operation_completeHandler(o:IOperation):void {
+
+			removeOperationListeners(o);
 			
 			if (_operations.length == 0) {
-				dispatchCompleteEvent();
+				dispatchComplete();
 			} else {
 				executeNextOperation();
 			}
@@ -99,32 +125,31 @@ package org.flashmonkey.operations.service
 		/**
 		 * Handles an error from an operation in this queue.
 		 */
-		protected function operation_errorHandler(event:OperationEvent):void {
-			removeOperationListeners(event.operation);
-			progress++;
+		protected function operation_errorHandler(o:IOperation):void {
+			removeOperationListeners(o);
 			
 			// redispatch an error from an operation in this queue
 			// note: don't immediately dispatch the error if it comes from another operation queue
 			// since this will cause this queue to be complete before the inner operation queue is complete
 			
-			if (event.operation is OperationSequence) {
-				var queue:OperationSequence = OperationSequence(event.operation);
-				var queueComplete:Boolean = (queue.progress == queue.total);
+			if (o is OperationSequence) {
+				var queue:OperationSequence = OperationSequence(o);
+				var queueComplete:Boolean = (queue.progress == 1.0);
 				
 				if (queueComplete) {
-					setTimeout(redispatchErrorAndContinue, 1, event.error);
+					setTimeout(redispatchErrorAndContinue, 1, o.error);
 					return; // quit here!
 				}
 			}
 			
-			redispatchErrorAndContinue(event.error);
+			redispatchErrorAndContinue(o.error);
 		}
         
 		private function redispatchErrorAndContinue(error:*):void {
-			dispatchErrorEvent(error);
+			dispatchError(error);
 			
 			if (_operations.length == 0) {
-				dispatchCompleteEvent();
+				dispatchComplete();
 			} else {
 				executeNextOperation();
 			}

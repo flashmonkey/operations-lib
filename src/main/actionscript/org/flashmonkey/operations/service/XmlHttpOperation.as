@@ -1,6 +1,6 @@
 package org.flashmonkey.operations.service
 {
-    import flash.events.ErrorEvent;	
+    import flash.events.ErrorEvent;
     import flash.events.Event;
     import flash.events.HTTPStatusEvent;
     import flash.events.IOErrorEvent;
@@ -103,8 +103,8 @@ package org.flashmonkey.operations.service
             loader = new URLLoader();
             loader.dataFormat = URLLoaderDataFormat.TEXT;
             loader.addEventListener(Event.COMPLETE, handleResult);
-            loader.addEventListener(IOErrorEvent.IO_ERROR, dispatchErrorEvent);
-            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, dispatchErrorEvent);
+            loader.addEventListener(IOErrorEvent.IO_ERROR, onErrorEvent);
+            loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onErrorEvent);
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onStatusEvent);
             loader.load(request);
         }
@@ -112,6 +112,11 @@ package org.flashmonkey.operations.service
 		private function onStatusEvent(e:HTTPStatusEvent):void 
 		{
 			
+		}
+		
+		private function onErrorEvent(e:Event):void 
+		{
+			dispatchError(e);
 		}
         
         /**
@@ -129,7 +134,7 @@ package org.flashmonkey.operations.service
          */
         protected function handleResult(e:Event):void
         {            
-            dispatchCompleteEvent(new XML(loader.data));
+            dispatchComplete(new XML(loader.data));
         }
     }
 }

@@ -11,9 +11,9 @@ package org.flashmonkey.operations.service
         public function FilterOperation(operation:IOperation)
         {
             _operation = operation;
-            _operation.addCompleteListener(dispatchCompleteEvent);
-            _operation.addErrorListener(dispatchErrorEvent);
-            _operation.addErrorListener(dispatchErrorEvent);
+            _operation.addCompleteListener(dispatchComplete);
+            _operation.addErrorListener(dispatchError);
+            _operation.addErrorListener(dispatchError);
         }
         
         /**

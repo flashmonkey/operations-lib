@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-	<!--
-    Copyright 2010 Quick TV
-  -->
+<!-- Copyright 2010 Quick TV -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -10,9 +8,9 @@
 	<groupId>org.flashmonkey</groupId>
 	<artifactId>operations-lib</artifactId>
 	<packaging>swc</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>1.2.1</version>
 	<name>Flashmonkey Operation Framework</name>
-	
+
 	<properties>
 		<flex.sdk.version>4.0.0.14159</flex.sdk.version>
 		<target.player.version>10.0.0</target.player.version>
@@ -21,48 +19,49 @@
 
 	<build>
 		<sourceDirectory>src/main/actionscript</sourceDirectory>
-
 		<plugins>
 			<plugin>
 				<groupId>org.sonatype.flexmojos</groupId>
 				<artifactId>flexmojos-maven-plugin</artifactId>
-				<version>3.7.1</version>
-					<extensions>true</extensions>
-					<dependencies>
-						<dependency>
-							<groupId>com.adobe.flex</groupId>
-							<artifactId>compiler</artifactId>
-							<version>${flex.sdk.version}</version>
-							<type>pom</type>
-						</dependency>
-						<dependency>
-							<groupId>com.adobe.flex.compiler</groupId>
-							<artifactId>asdoc</artifactId>
-							<version>${flex.sdk.version}</version>
-							<classifier>template</classifier>
-							<type>zip</type>
-						</dependency>
-					</dependencies>
-					<configuration>
-						<configurationReport>true</configurationReport>
-						<debug>${config.debug}</debug>
-						<targetPlayer>${target.player.version}</targetPlayer>
-						<definesDeclaration>
-						  <property>
+				<version>4.0-beta-3</version>
+				<extensions>true</extensions>
+				<dependencies>
+					<dependency>
+						<groupId>com.adobe.flex</groupId>
+						<artifactId>compiler</artifactId>
+						<version>${flex.sdk.version}</version>
+						<type>pom</type>
+					</dependency>
+					<dependency>
+						<groupId>com.adobe.flex.compiler</groupId>
+						<artifactId>asdoc</artifactId>
+						<version>${flex.sdk.version}</version>
+						<classifier>template</classifier>
+						<type>zip</type>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<configurationReport>true</configurationReport>
+					<debug>${config.debug}</debug>
+					<targetPlayer>${target.player.version}</targetPlayer>
+					<definesDeclaration>
+						<property>
 							<name>CONFIG::debug</name>
 							<value>${config.debug}</value>
-						  </property>
-						</definesDeclaration>
-						<locales>
-							<param>en_US</param>
-						</locales>
-						<updateSecuritySandbox>true</updateSecuritySandbox>
-						<includeAsClasses>
-	                        <source>
-	                            <directory>src/main/actionscript</directory>
-	                        </source>
-	                    </includeAsClasses>
-					</configuration>
+						</property>
+					</definesDeclaration>
+					<locales>
+						<param>en_US</param>
+					</locales>
+					<updateSecuritySandbox>true</updateSecuritySandbox>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>optimize-swf</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
@@ -77,34 +76,71 @@
 		</dependency>
 
 		<dependency>
-			<groupId>flexunit</groupId>
+			<groupId>com.adobe.flexunit</groupId>
 			<artifactId>flexunit</artifactId>
-			<version>0.90</version>
+			<version>4.0-beta-2</version>
 			<type>swc</type>
-			<scope>compile</scope>
+			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.as3commons</groupId>
-			<artifactId>as3-commons-lang</artifactId>
-			<version>0.3</version>
+			<artifactId>as3commons-lang</artifactId>
+			<version>0.3.1</version>
 			<type>swc</type>
-			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.osflash</groupId>
+			<artifactId>as3-signals</artifactId>
+			<version>0.8</version>
+			<type>swc</type>
 		</dependency>
 
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
-			<id>forge</id>
-			<url>http://193.108.87.29:8081/artifactory/repo</url>
 			<snapshots>
-				<enabled>true</enabled>
+				<enabled>false</enabled>
 			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
+			<id>flashmonkey-central</id>
+			<name>libs-release</name>
+			<url>http://184.73.181.60:8081/artifactory/libs-release</url>
+		</repository>
+		<repository>
+			<snapshots />
+			<id>flashmonkey-snapshots</id>
+			<name>libs-snapshot</name>
+			<url>http://184.73.181.60:8081/artifactory/libs-snapshot</url>
 		</repository>
 	</repositories>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>forge</id>
+			<url>http://repository.sonatype.org/content/groups/flexgroup</url>
+			<name>Maven Plugin Repository</name>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>flashmonkey-central</id>
+			<name>FlashMonkey Release Repository</name>
+			<url>http://184.73.181.60:8081/artifactory/libs-release-local</url>
+		</repository>
+		<snapshotRepository>
+			<id>flashmonkey-snapshots</id>
+			<name>FlashMonkey Snapshot Repository</name>
+			<url>http://184.73.181.60:8081/artifactory/libs-snapshot-local</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
